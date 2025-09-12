@@ -165,6 +165,12 @@
         Bewegung Unten:
         <input type="checkbox" id="chkDown" checked />
       </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Zerstoer:
+        <input type="checkbox" id="zerstoer" />
+      </label>
     </footer>
 
     <script>
@@ -203,6 +209,14 @@
       let posX = spielbereich.clientWidth / 2;
       let posY = spielbereich.clientHeight / 2;
       const moveDist = 10;
+
+      function zerstoerVogel() {
+        if (document.getElementById("zerstoer").checked) {
+          img.style.display = "none";
+        } else {
+          img.style.display = "block";
+        }
+      }
 
       function getActiveDirections() {
         let dirs = [];
@@ -258,6 +272,10 @@
 
       flipCheckbox.addEventListener("change", () => {
         updateFlip();
+      });
+
+      document.getElementById("zerstoer").addEventListener("change", () => {
+        zerstoerVogel();
       });
 
       const bildCheckboxen = [
