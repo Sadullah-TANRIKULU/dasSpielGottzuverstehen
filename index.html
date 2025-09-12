@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href="./assets/puppet.png" type="image/x-icon" />
+    <title>Wie Allah uns entwickelt!</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        background: #f4f4f4;
+        position: relative;
+      }
+      #spielbereich {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 600px;
+        height: 400px;
+        transform: translate(-50%, -50%);
+        border: 4px solid orange; /* Seitengrenze sichtbar */
+        background: #fff;
+        overflow: hidden;
+      }
+      #box {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 100px;
+        height: 100px;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+      #box img {
+        z-index: 15;
+        width: 90px;
+        height: 90px;
+        user-select: none;
+        pointer-events: none;
+        transition: transform 0.4s ease;
+        display: block;
+        margin: auto;
+      }
+      .flip-vertikal {
+        transform: scaleY(-1);
+      }
+      footer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+        border-top: 1px solid #ccc;
+        padding: 0.8em 1rem;
+        font-size: 1.15em;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.8em 1.2em;
+        align-items: center;
+        z-index: 10;
+      }
+      footer label {
+        user-select: none;
+        font-size: 1.25em;
+        display: flex;
+        align-items: center;
+        gap: 0.4em;
+      }
+      footer input[type="checkbox"] {
+        transform: scale(1.7);
+        accent-color: #3366ff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="text-align: center">Wie Allah uns entwickelt!</h1>
+    <div id="spielbereich">
+      <div id="box" title="Klicke zum umdrehen oder anhalten">
+        <img src="./assets/red_bird.png" alt="Angry Bird" id="charakterbild" />
+      </div>
+    </div>
+
+    <footer
+      style="
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 0.8em;
+        background: #fff;
+        border-top: 1px solid #ccc;
+        font-size: 1.15em;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+      "
+    >
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Bewegung an:
+        <input type="checkbox" id="chkBewegung" checked />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Vertikal Flip:
+        <input type="checkbox" id="chkFlip" />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Bild Normal:
+        <input type="checkbox" id="chkBildNormal" />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Bild Grün:
+        <input type="checkbox" id="chkBildGruen" />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Bild Anderer:
+        <input type="checkbox" id="chkBildAnderer" />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        ganzer Bildschirm:
+        <input type="checkbox" id="chkSpielbereichGanzeSeite" checked />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Bewegung Links:
+        <input type="checkbox" id="chkLeft" checked />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Bewegung Rechts:
+        <input type="checkbox" id="chkRight" checked />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Bewegung Oben:
+        <input type="checkbox" id="chkUp" checked />
+      </label>
+      <label
+        style="flex: 1 1 200px; display: flex; align-items: center; gap: 0.5em"
+      >
+        Bewegung Unten:
+        <input type="checkbox" id="chkDown" checked />
+      </label>
+    </footer>
+
+    <script>
+      const box = document.getElementById("box");
+      const img = document.getElementById("charakterbild");
+      const spielbereich = document.getElementById("spielbereich");
+      const chkBereich = document.getElementById("chkSpielbereichGanzeSeite");
+
+      chkBereich.addEventListener("change", () => {
+        if (chkBereich.checked) {
+          // Enger Bereich aktiv, spielbereich sichtbar und zentriert
+          spielbereich.style.width = "600px";
+          spielbereich.style.height = "400px";
+          spielbereich.style.border = "4px solid orange";
+          spielbereich.style.position = "absolute";
+          spielbereich.style.left = "50%";
+          spielbereich.style.top = "50%";
+          spielbereich.style.transform = "translate(-50%, -50%)";
+        } else {
+          // Ganzes Fenster, spielbereich wird zum gesamten Body
+          spielbereich.style.width = "100vw";
+          spielbereich.style.height = "100vh";
+          spielbereich.style.border = "none";
+          spielbereich.style.position = "fixed";
+          spielbereich.style.left = "0";
+          spielbereich.style.top = "0";
+          spielbereich.style.transform = "none";
+        }
+        // Anfangsposition der Box anpassen
+        posX = spielbereich.clientWidth / 2;
+        posY = spielbereich.clientHeight / 2;
+        box.style.left = posX + "px";
+        box.style.top = posY + "px";
+      });
+
+      let posX = spielbereich.clientWidth / 2;
+      let posY = spielbereich.clientHeight / 2;
+      const moveDist = 10;
+
+      function getActiveDirections() {
+        let dirs = [];
+        if (document.getElementById("chkLeft").checked) dirs.push("left");
+        if (document.getElementById("chkRight").checked) dirs.push("right");
+        if (document.getElementById("chkUp").checked) dirs.push("up");
+        if (document.getElementById("chkDown").checked) dirs.push("down");
+        return dirs;
+      }
+
+      let bewegungAn = true;
+      let bildStatus = 0; // 0=normal, 1=grün, 2=anderer
+      let flipped = false;
+
+      // Kontroll-Checkboxen
+      const bewegungCheckbox = document.getElementById("chkBewegung");
+      const flipCheckbox = document.getElementById("chkFlip");
+      const bildNormalCheckbox = document.getElementById("chkBildNormal");
+      const bildGruenCheckbox = document.getElementById("chkBildGruen");
+      const bildAndererCheckbox = document.getElementById("chkBildAnderer");
+
+      const imgNormal = "./assets/red_bird.png";
+      const imgGruen = "./assets/red_bird_but_green.png";
+      const imgAnderer = "./assets/black_bird.png";
+
+      function updateBild() {
+        if (bildNormalCheckbox.checked) {
+          img.src = imgNormal;
+          bildStatus = 0;
+        } else if (bildGruenCheckbox.checked) {
+          img.src = imgGruen;
+          bildStatus = 1;
+        } else if (bildAndererCheckbox.checked) {
+          img.src = imgAnderer;
+          bildStatus = 2;
+        }
+      }
+
+      function updateFlip() {
+        if (flipCheckbox.checked) {
+          img.classList.add("flip-vertikal");
+          flipped = true;
+        } else {
+          img.classList.remove("flip-vertikal");
+          flipped = false;
+        }
+      }
+
+      bewegungCheckbox.addEventListener("change", () => {
+        bewegungAn = bewegungCheckbox.checked;
+        // box.style.border = bewegungAn ? "none" : "3px solid red";
+      });
+
+      flipCheckbox.addEventListener("change", () => {
+        updateFlip();
+      });
+
+      const bildCheckboxen = [
+        bildNormalCheckbox,
+        bildGruenCheckbox,
+        bildAndererCheckbox,
+      ];
+
+      bildNormalCheckbox.addEventListener("change", () => {
+        if (bildNormalCheckbox.checked) {
+          bildGruenCheckbox.checked = false;
+          bildAndererCheckbox.checked = false;
+          updateBild();
+        }
+      });
+      bildGruenCheckbox.addEventListener("change", () => {
+        if (bildGruenCheckbox.checked) {
+          bildNormalCheckbox.checked = false;
+          bildAndererCheckbox.checked = false;
+          updateBild();
+        }
+      });
+      bildAndererCheckbox.addEventListener("change", () => {
+        if (bildAndererCheckbox.checked) {
+          bildNormalCheckbox.checked = false;
+          bildGruenCheckbox.checked = false;
+          updateBild();
+        }
+      });
+
+      function moveBox() {
+        if (!bewegungAn) {
+          setTimeout(moveBox, 350);
+          return;
+        }
+        let allowed = getActiveDirections();
+        if (allowed.length === 0) {
+          setTimeout(moveBox, 350);
+          return;
+        }
+
+        let dir = allowed[Math.floor(Math.random() * allowed.length)];
+        switch (dir) {
+          case "left":
+            posX -= moveDist;
+            break;
+          case "right":
+            posX += moveDist;
+            break;
+          case "up":
+            posY -= moveDist;
+            break;
+          case "down":
+            posY += moveDist;
+            break;
+        }
+
+        posX = Math.max(30, Math.min(spielbereich.clientWidth - 30, posX));
+        posY = Math.max(30, Math.min(spielbereich.clientHeight - 30, posY));
+
+        box.style.left = posX + "px";
+        box.style.top = posY + "px";
+
+        if (
+          posX <= 30 ||
+          posX >= spielbereich.clientWidth - 30 ||
+          posY <= 30 ||
+          posY >= spielbereich.clientHeight - 30
+        ) {
+          setTimeout(() => {
+            posX = spielbereich.clientWidth / 2;
+            posY = spielbereich.clientHeight / 2;
+            box.style.left = posX + "px";
+            box.style.top = posY + "px";
+          }, 500);
+        }
+
+        setTimeout(moveBox, 350);
+      }
+
+      // Init
+      posX = spielbereich.clientWidth / 2;
+      posY = spielbereich.clientHeight / 2;
+      box.style.left = posX + "px";
+      box.style.top = posY + "px";
+      bewegungCheckbox.checked = true;
+      bildNormalCheckbox.checked = true;
+      flipCheckbox.checked = false;
+      updateBild();
+      updateFlip();
+
+      moveBox();
+
+      window.addEventListener("resize", () => {
+        posX = spielbereich.clientWidth / 2;
+        posY = spielbereich.clientHeight / 2;
+        box.style.left = posX + "px";
+        box.style.top = posY + "px";
+      });
+    </script>
+  </body>
+</html>
